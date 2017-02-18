@@ -1,0 +1,5 @@
+node_modules/*
+music/*
+torrents/*
+discotheque-tracker/node_modules/*
+torrent-creator/node_modules/*
