@@ -20,7 +20,7 @@ const baseTorrentPath = '../../torrent'
 const musicTypes = ['mp3', 'flac']
 // our tracker domain
 
-const trackers = ['wss://127.0.0.1:3000']
+const trackers = ['ws://127.0.0.1:3002']
 // index to remove the music folder when creating torrents
 const baseMusicIndex = baseMusicPath.lastIndexOf('/') + 1
 
@@ -93,26 +93,24 @@ function createAndSaveTorrent(file){
           if(!metadata.album){
             throw new Error('File "' + file + '" does not have album')
           }
-          db.existsUniqueArtist(metadata.artist[0], function(isUnique, artist){
-            if(isUnique){
+          db.Artist.findOne({where: {name: metadata.artist[0]}}).then(function(artist){
+            if(artist !== null){
               // read magnet to save in database
               var magnetURI = parseTorrent.toMagnetURI(parseTorrent(torrent))
               var infoHash = parseTorrent(magnetURI).infoHash
               // save song
-              db.Song.create({
+              db.Song.findOrCreate({ where:{
                 title: metadata.title,
                 duration: metadata.duration,
                 magnetURI: magnetURI,
                 infoHash: infoHash
-              }).then(function(song) {
+              }}).spread(function(song) {
                 db.Album.findOrCreate({
                   where: {
                     title: metadata.album
                   }
                 }).spread(function(album, created) {
-                  if(created){
-                    album.setArtist(artist)
-                  }
+                  album.setArtist(artist.dataValues.id)
                   // write picture to path as cover
                   if(!album.get('picturePath') && metadata.picture.length > 0) {
                     var picturePath = path + '/cover.' + metadata.picture[0].format;

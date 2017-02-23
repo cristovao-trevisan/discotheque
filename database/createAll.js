@@ -2,9 +2,9 @@ const Sequelize = require('sequelize')
 
 const config = require('./config')
 
-var sequelize = new Sequelize(config.db.name, config.db.username, config.db.password, {
+var sequelize = new Sequelize(config.database, config.username, config.password, {
   host: 'localhost',
-  dialect: 'mysql',
+  dialect: 'postgres',
   logging: false
 })
 
@@ -19,16 +19,20 @@ var User = sequelize.define('user', {
   },
   facebookId: {
     type: Sequelize.STRING,
-    unique: true,
-    validate: {
-      notEmpty: true
-    }
+    unique: true
   },
   profilePicture: {
     type: Sequelize.STRING
   },
   email: {
+    type: Sequelize.STRING,
+    unique: true
+  },
+  location: {
     type: Sequelize.STRING
+  },
+  password: {
+    type: Sequelize.STRING(60)
   }
 })
 
@@ -37,7 +41,7 @@ var Artist = sequelize.define('artist', {
   description: {
     type: Sequelize.STRING(4000),
   },
-  alias: {
+  name: {
     type: Sequelize.STRING,
     unique: true
   }
@@ -264,66 +268,7 @@ Song.belongsTo(Album)
 Album.hasMany(Song)
 
 
-//---------------------Sync------------------------------------
-sequelize.sync().then(() => {
+//---------------------CREATE----------------------------------
+sequelize.sync({force: true}).then(() => {
 
 })
-
-//----------------------Useful functions-----------------------
-
-
-function existsUniqueArtist(name, callback) {
-  // try to find an alias
-  Artist.find({
-    where: {
-      alias: name
-    }
-  }).then((art) => {
-    if(art) {
-      callback(true, art)
-    }
-    else {
-      // could not find alias -> try to find user name
-      Artist.findAndCountAll({
-        include: [{
-          model: User,
-          where: {
-            name: name
-          }
-        }]
-      }).then((result) => {
-        if(result.count == 1 ) {
-          Artist.find({
-            where: {
-              alias: result.rows[0].get('name')
-            }
-          }).then((art) => {
-            if(art){
-              callback(false)
-            }
-            else {
-              callback(true, result.rows[0])
-            }
-          })
-        }
-        else {
-          callback(false)
-        }
-      })
-    }
-  })
-}
-
-
-//-------------------------Exports-----------------------------
-module.exports = {
-  User: User,
-  Artist: Artist,
-  Album: Album,
-  Song: Song,
-  Tag:  Tag,
-  Like: Like,
-  sequelize:  sequelize,
-  Sequelize:  Sequelize,
-  existsUniqueArtist: existsUniqueArtist
-}

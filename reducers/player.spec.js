@@ -1,12 +1,16 @@
 import reducer, {initialState} from './player'
 import * as types from '../constants/ActionTypes'
+import {PLAYER_BACK_REPEAT_TIMEOUT} from '../constants'
 
 
-const playlist = [
-  {id: 0, title: 'Yesterday', duration: 144, albumId: 0},
-  {id: 10344, title: 'Highway to Hell', duration: 208, albumId: 1},
-  {id: 5, title: 'Help!', duration: 141, albumId: 0}
-]
+const playlist = {
+  id: 0,
+  songs: [
+    {id: 0, title: 'Yesterday', duration: 144, albumId: 0},
+    {id: 10344, title: 'Highway to Hell', duration: 208, albumId: 1},
+    {id: 5, title: 'Help!', duration: 141, albumId: 0}
+  ]
+}
 
 const song = {id: 10344, title: 'Highway to Hell', duration: 208, albumId: 1}
 const otherSong = {id: 1234, title: 'Money', duration: 383, albumId: 165}
@@ -28,7 +32,7 @@ describe('player reducer', () => {
       {
         ...initialState,
         playlist,
-        song: playlist[0],
+        song: playlist.songs[0],
         time: 0,
         isPlaying: true
       }
@@ -107,21 +111,70 @@ describe('player reducer', () => {
   })
 
   it('should handle PLAY_TOGGLE', () => {
-    let time = song.duration - 10
+    let state = {...initialState, song: {title: 'I do exist'}}
+    state = reducer(state, {type: types.PLAY_TOGGLE})
+    expect(
+      state.isPlaying
+    ).toEqual(true)
+    state = reducer(state, {type: types.PLAY_TOGGLE})
+    expect(
+      state.isPlaying
+    ).toEqual(false)
+  })
+
+  it('should NOT handle PLAY_TOGGLE without a song selected', () => {
     let state = initialState
     state = reducer(state, {type: types.PLAY_TOGGLE})
     expect(
-      state
-    ).toEqual({
-      ...initialState,
-      isPlaying: true
-    })
-    state = reducer(state, {type: types.PLAY_TOGGLE})
+      state.isPlaying
+    ).toEqual(false)
+  })
+
+  it('should handle PLAYER_NEXT', () => {
+    let state = {...initialState, playlist, song: playlist.songs[1], time: 12}
+    state = reducer(state, {type: types.PLAYER_NEXT})
     expect(
       state
     ).toEqual({
-      ...initialState,
-      isPlaying: false
+      ...state,
+      song: playlist.songs[2],
+      time: 0
+    })
+    state = reducer(state, {type: types.PLAYER_NEXT})
+    expect(
+      state
+    ).toEqual({
+      ...state,
+      song: playlist.songs[0],
+      time: 0
+    })
+  })
+
+  it('should handle PLAYER_BACK', () => {
+    let state = {...initialState, playlist, song: playlist.songs[1], time: PLAYER_BACK_REPEAT_TIMEOUT+1}
+    state = reducer(state, {type: types.PLAYER_BACK})
+    expect(
+      state
+    ).toEqual({
+      ...state,
+      song: playlist.songs[1],
+      time: 0
+    })
+    state = reducer(state, {type: types.PLAYER_BACK})
+    expect(
+      state
+    ).toEqual({
+      ...state,
+      song: playlist.songs[0],
+      time: 0
+    })
+    state = reducer(state, {type: types.PLAYER_BACK})
+    expect(
+      state
+    ).toEqual({
+      ...state,
+      song: playlist.songs[2],
+      time: 0
     })
   })
 

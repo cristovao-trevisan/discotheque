@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="dist/index.css" />
     <title>Hello, I'm starting to develop</title>
   </head>
   <body>
@@ -11,7 +11,8 @@
     <script>
       window.user = <%- JSON.stringify(user) %>
     </script>
-    <script src="common.js"></script>
-    <script src="index.js"></script>
+    <script src="https://cdn.jsdelivr.net/webtorrent/latest/webtorrent.min.js"></script>
+    <script src="dist/common.js"></script>
+    <script src="dist/index.js"></script>
   </body>
 </html>

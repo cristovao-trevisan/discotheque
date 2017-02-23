@@ -4,9 +4,7 @@ module.exports = {
     secret  : '53436673fc769b1a4ea69b873b595fdf',
     callbackUrl: '/auth/facebook/callback'
   },
-  db  : {
-    name  : 'discothequeTest',
-    username  : 'root',
-    password  : '1234'
+  session   : {
+    secret : 'i think no one will found out this'
   }
 }

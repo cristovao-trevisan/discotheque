@@ -51,4 +51,18 @@ describe('player actions', () => {
     }
     expect(actions.playToggle).toEqual(expectedAction)
   })
+
+  it('should create an action to set the next song', () => {
+    const expectedAction = {
+      type: types.PLAYER_NEXT
+    }
+    expect(actions.playerNext).toEqual(expectedAction)
+  })
+
+  it('should create an action to restart/go back a song', () => {
+    const expectedAction = {
+      type: types.PLAYER_BACK
+    }
+    expect(actions.playerBack).toEqual(expectedAction)
+  })
 })

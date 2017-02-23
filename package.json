@@ -36,6 +36,8 @@
   },
   "dependencies": {
     "body-parser": "^1.16.0",
+    "connect-pg": "^1.1.5",
+    "connect-pg-simple": "^3.1.2",
     "cookie-parser": "^1.4.3",
     "create-torrent": "^3.25.1",
     "ejs": "^2.5.6",
@@ -45,10 +47,17 @@
     "mysql": "^2.12.0",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
+    "passport.socketio": "^3.7.0",
+    "pg": "^6.1.2",
+    "pg-hstore": "^2.3.2",
+    "rx": "^4.1.0",
     "sequelize": "^3.28.0",
+    "socket.io": "^1.7.3",
+    "socket.io-events": "^0.4.6",
     "webtorrent": "^0.98.0"
   },
   "entry": {
     "index": "./reactIndex.js"
-  }
+  },
+  "theme": "./theme.js"
 }

@@ -3,17 +3,18 @@ const db = require('../database')
 const config = require('./config')
 
 var server = new Server({
-  udp: true, // enable udp server? [default=true]
-  http: true, // enable http server? [default=true]
+  udp: false, // enable udp server? [default=true]
+  http: false, // enable http server? [default=true]
   ws: true, // enable websocket server? [default=true]
-  stats: true, // enable web-based statistics? [default=true]
+  stats: false, // enable web-based statistics? [default=true]
   filter: function (infoHash, params, cb) {
     // allow only the songs in database
     db.Song.find({
-      where{
+      where: {
         infoHash: infoHash
       }
     }).then((song) => {
+      console.log(infoHash, song !== null)
       cb(song !== null)
     })
   }
