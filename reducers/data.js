@@ -1,4 +1,4 @@
-import {ADD_ARTIST, ADD_SONG, ADD_ALBUM, ADD_PLAYLIST} from '../constants/ActionTypes'
+import {ADD_ARTIST, ADD_SONG, ADD_ALBUM, ADD_PLAYLIST, ADD_PICTURE, ADD_ALBUM_PICTURE, ADD_ARTIST_PICTURE} from '../constants/ActionTypes'
 
 export const initialState = {
   artists: {},
@@ -25,10 +25,8 @@ const data = (state = initialState, action) => {
       var artist = state.artists[action.album.artistId]
       if(artist === undefined) return state
       var album = {...action.album}
-      console.log(album)
       if(action.album.songs === undefined)
         album.songs = []
-      console.log(artist)
       return {
         ...state,
         albums: {
@@ -74,6 +72,30 @@ const data = (state = initialState, action) => {
         playlists: {
           ...state.playlists,
           [action.playlist.id]: action.playlist
+        }
+      }
+      break;
+    case ADD_ARTIST_PICTURE:
+      return {
+        ...state,
+        artists: {
+          ...state.artists,
+          [action.id]: {
+            ...state.artists[action.id],
+            picture: action.picture
+          }
+        }
+      }
+      break;
+    case ADD_ALBUM_PICTURE:
+      return {
+        ...state,
+        albums: {
+          ...state.albums,
+          [action.id]: {
+            ...state.albums[action.id],
+            picture: action.picture
+          }
         }
       }
       break;

@@ -13,9 +13,9 @@ const db = require('../database')
 
 //-------------------constants (change this for different folder structure)-----
 // music folder
-const baseMusicPath = '../../music'
+const baseMusicPath = '/home/cristovao/Documents/musicoteca/music'
 // torrent output folder
-const baseTorrentPath = '../../torrent'
+const baseTorrentPath = '/home/cristovao/Documents/musicoteca/torrent'
 // allowed music types
 const musicTypes = ['mp3', 'flac']
 // our tracker domain
@@ -30,6 +30,10 @@ function isMusicFile(fileName){
   var dotIndex = fileName.lastIndexOf('.')
   if(dotIndex<0) return false
   return musicTypes.indexOf(fileName.slice(dotIndex+1)) >= 0
+}
+
+function copyFile(origin, destination){
+  fs.createReadStream(origin).pipe(fs.createWriteStream(destination));
 }
 
 
@@ -104,24 +108,28 @@ function createAndSaveTorrent(file){
                 duration: metadata.duration,
                 magnetURI: magnetURI,
                 infoHash: infoHash
-              }}).spread(function(song) {
+              }}).spread(song =>{
                 db.Album.findOrCreate({
                   where: {
                     title: metadata.album
                   }
                 }).spread(function(album, created) {
                   album.setArtist(artist.dataValues.id)
-                  // write picture to path as cover
-                  if(!album.get('picturePath') && metadata.picture.length > 0) {
-                    var picturePath = path + '/cover.' + metadata.picture[0].format;
-                    fs.writeFile(picturePath, metadata.picture[0].data, (err) => {
-                      if(err) throw err
-                      album.set('picturePath', picturePath)
-                    })
-                  }
                   // write torrent - to seed clients
                   fs.writeFile(torrentFile, torrent)
                   song.setAlbum(album)
+                  // cover path
+                  var cover = file.slice(0, file.lastIndexOf('/')) + '/cover.png'
+                  fs.stat(cover, err => {
+                    if(!err){
+                      fs.stat(path+'/cover.png', err => {
+                        if(err){
+                          album.set('picturePath', path+'/cover.png').save()
+                          copyFile(cover, path+'/cover.png')
+                        }
+                      })
+                    }
+                  })
                 })
               })
             }

@@ -34,3 +34,15 @@ export const addSong = song => ({type: types.ADD_SONG, song})
 
 /** @param {Object} playlist */
 export const addPlaylist = playlist => ({type: types.ADD_PLAYLIST, playlist})
+
+/**
+ * @param {number} id Album id
+ * @param {string} picture Base 64 string
+*/
+export const addAlbumPicture = (id, picture) => ({type: types.ADD_ALBUM_PICTURE, id, picture})
+
+/**
+ * @param {number} id Artist id
+ * @param {string} picture Base 64 string
+*/
+export const addArtistPicture = (id, picture) => ({type: types.ADD_ARTIST_PICTURE, id, picture})

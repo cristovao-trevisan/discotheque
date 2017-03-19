@@ -16,10 +16,7 @@ const player = (state = initialState, action) => {
     case PLAY_PLAYLIST:
       return {
         ...state,
-        playlist: action.playlist,
-        song: action.playlist.songs[0],
-        time: 0,
-        isPlaying: true
+        playlist: action.playlist
       }
     case PLAY_SONG:
       if(state.playlist.songs.find(song => song.id === action.song.id))

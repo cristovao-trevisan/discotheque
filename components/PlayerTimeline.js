@@ -1,12 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Slider } from 'antd'
-
-const zeroPad = (num, places) => {
-  var zero = places - num.toString().length + 1;
-  return Array(+(zero > 0 && zero)).join("0") + num;
-}
-
-const formatTime = (time) => parseInt(time/60)+':'+zeroPad(time%60, 2)
+import { formatTime, zeroPad } from '../helpers'
 
 class PlayerTimeline extends React.Component {
   static propTypes = {

@@ -44,6 +44,9 @@ var Artist = sequelize.define('artist', {
   name: {
     type: Sequelize.STRING,
     unique: true
+  },
+  picturePath: {
+    type: Sequelize.STRING
   }
 })
 
@@ -270,11 +273,10 @@ Album.hasMany(Song)
 
 //-------------------------Exports-----------------------------
 module.exports = {
-  User: User,
-  Artist: Artist,
-  Album: Album,
-  Song: Song,
-  Tag:  Tag,
-  Like: Like,
-  sequelize
+  User,
+  Artist,
+  Album,
+  Song,
+  Tag,
+  Like,
 }

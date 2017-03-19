@@ -10,11 +10,6 @@ import { rootEpic } from './epics'
 import Player from './modules/Player'
 import ServerDataAcquisitor from './modules/ServerDataAcquisitor'
 
-console.log(rootEpic)
-
-window.Player = Player
-
-
 const epicMiddleware = createEpicMiddleware(rootEpic);
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -24,7 +19,9 @@ const store = createStore(reducer, composeEnhancers(applyMiddleware(epicMiddlewa
 window.serverDataAcquisitor = new ServerDataAcquisitor(store)
 
 window.player = new Player(store)
+window.Player = Player
 
+serverDataAcquisitor.getTopic('artists')
 
 render(
   <Provider store={store}>

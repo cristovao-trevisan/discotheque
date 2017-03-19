@@ -1,5 +1,5 @@
-node_modules/*
-music/*
-torrents/*
-discotheque-tracker/node_modules/*
-torrent-creator/node_modules/*
+dist/*
+node_modules
+.DS_Store
+discotheque-tracker/node_modules
+torrent-creator/node_modules

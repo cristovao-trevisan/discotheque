@@ -1,21 +1,23 @@
-var fs = require('fs')
-var Rx = require('rx')
-var express = require('express')
-var passport = require('passport')
-var FacebookStrategy = require('passport-facebook').Strategy
-var app = express()
-var session = require('express-session')
-var pgSimpleStore    = require('connect-pg-simple')(session)  // PostgreSQL session store
-var pg = require('pg')
-var dbConfig = require('./database/config')
-var sessionStore = new pgSimpleStore({
+const fs = require('fs')
+const readFile = require('fs-readfile-promise');
+const Rx = require('rxjs/Rx')
+require('rxjs/add/operator/mergeMap')
+const express = require('express')
+const passport = require('passport')
+const FacebookStrategy = require('passport-facebook').Strategy
+const app = express()
+const session = require('express-session')
+const pgSimpleStore = require('connect-pg-simple')(session)  // PostgreSQL session store
+const pg = require('pg')
+const dbConfig = require('./database/config')
+const sessionStore = new pgSimpleStore({
   conString : 'pg://' + dbConfig.username + ':' + dbConfig.password + '@localhost/' + dbConfig.database
 })
-var passportSocketIo = require("passport.socketio")
-var cookieParser = require('cookie-parser')
+const passportSocketIo = require("passport.socketio")
+const cookieParser = require('cookie-parser')
 
-var config = require('./config')
-var db = require('./database')
+const config = require('./config')
+const db = require('./database')
 
 // --------- PASSPORT CONFIG -------------
 passport.serializeUser(function(user, done) {
@@ -55,21 +57,28 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }))
-app.use(passport.initialize())
-app.use(passport.session())
+if(config.authenticate){
+  app.use(passport.initialize())
+  app.use(passport.session())
+}
 
-app.use('/public', ensureAuthenticated, express.static('views/public'))
+app.use('/public', express.static('views/public'))
 app.use('/dist', ensureAuthenticated, express.static('dist'))
 
 app.set('view engine', 'ejs')
 
-app.get('/', ensureAuthenticated, function (req, res) {
-  res.render('pages/index', {
+app.get('*', ensureAuthenticated, function (req, res) {
+  if(req.user === undefined || !config.authenticate) {
+    res.render('pages/index', {user: {name: 'Test', picture: undefined}})
+  }
+  else {
+    res.render('pages/index', {
       user: {
         name: req.user.displayName,
-        picture: req.user.photos[0].value
+        picture: req.user.photos.length > 0 ? req.user.photos[0].value : undefined
       }
-  })
+    })
+  }
 })
 
 app.get(
@@ -90,6 +99,7 @@ app.get('/logout', function(req, res){
 })
 
 function ensureAuthenticated(req, res, next) {
+  if(!config.authenticate) return next()
   if (req.isAuthenticated()) { return next() }
   res.redirect('/public/login.html')
 }
@@ -97,17 +107,19 @@ function ensureAuthenticated(req, res, next) {
 
 //  ------------------------------------SOCKET IO-------------------------------
 
-var server = require('http').createServer(app)
-var io = require('socket.io')(server)
+const server = require('http').createServer(app)
+const io = require('socket.io')(server)
 
-io.use(passportSocketIo.authorize({
-  cookieParser: cookieParser,       // the same middleware you registrer in express
-  key:          'express.sid',       // the name of the cookie where express/connect stores its session_id
-  secret:       config.session.secret,    // the session_secret to parse the cookie
-  store:        sessionStore,        // we NEED to use a sessionstore. no memorystore please
-  success:      onAuthorizeSuccess,  // *optional* callback on success - read more below
-  fail:         onAuthorizeFail,     // *optional* callback on fail/error - read more below
-}))
+if(config.authenticate){
+  io.use(passportSocketIo.authorize({
+    cookieParser: cookieParser,       // the same middleware you registrer in express
+    key:          'express.sid',       // the name of the cookie where express/connect stores its session_id
+    secret:       config.session.secret,    // the session_secret to parse the cookie
+    store:        sessionStore,        // we NEED to use a sessionstore. no memorystore please
+    success:      onAuthorizeSuccess,  // *optional* callback on success - read more below
+    fail:         onAuthorizeFail,     // *optional* callback on fail/error - read more below
+  }))
+}
 
 function onAuthorizeSuccess(data, accept){
   console.log('successful connection to socket.io')
@@ -124,28 +136,28 @@ function onAuthorizeFail(data, message, error, accept){
 io.on('connection', function(socket){
 
   socket.on('artists', () => {
-    if(socket.artistSubscription !== undefined){
-      socket.artist$.dispose();
+    if(socket.artist$ !== undefined){
+      socket.artist$.unsubscribe();
+      socket.artist$ = undefined
     }
 
     socket.artist$ = Rx.Observable.fromPromise(db.Artist.findAll())
-      .flatMap(x => x)
-      .flatMap(artist => Rx.Observable.just({
+      .mergeMap(x => x)
+      .mergeMap(artist => Rx.Observable.of({
           id: artist.dataValues.id,
           name: artist.dataValues.name,
           description: artist.dataValues.description
-        })
-      )
+      }))
       .subscribe(
         artist => socket.emit('artist', artist),
         err => {}
       )
   })
 
-  socket.on('albums', (artistId) => {
+  socket.on('artist', artistId => {
     Rx.Observable.fromPromise(db.Album.findAll({where: {artistId}}))
-      .flatMap(x => x)
-      .flatMap(album => Rx.Observable.just({
+      .mergeMap(x => x)
+      .mergeMap(album => Rx.Observable.of({
         id: album.dataValues.id,
         title: album.dataValues.title,
         description: album.dataValues.description,
@@ -157,10 +169,30 @@ io.on('connection', function(socket){
       )
   })
 
-  socket.on('songs', (albumId) => {
+  socket.on('albums', () => {
+    if(socket.album$ !== undefined){
+      socket.album$.unsubscribe();
+      socket.album$ = undefined
+    }
+
+    socket.album$ = Rx.Observable.fromPromise(db.Album.findAll())
+      .mergeMap(x => x)
+      .mergeMap(album => Rx.Observable.of({
+        id: album.dataValues.id,
+        title: album.dataValues.title,
+        description: album.dataValues.description,
+        artistId: album.dataValues.artistId
+      }))
+      .subscribe(
+        album => socket.emit('album', album),
+        err => {console.log(err)}
+      )
+  })
+
+  socket.on('songs', albumId => {
     Rx.Observable.fromPromise(db.Song.findAll({where:{albumId}}))
-      .flatMap(x => x)
-      .flatMap(song => Rx.Observable.just({
+      .mergeMap(x => x)
+      .mergeMap(song => Rx.Observable.of({
         id: song.dataValues.id,
         title: song.dataValues.title,
         duration: song.dataValues.duration,
@@ -173,19 +205,34 @@ io.on('connection', function(socket){
       )
   })
 
-  socket.on('song', (id) => {
+  socket.on('song', id => {
     Rx.Observable.fromPromise(db.Song.findOne({where:{id: id}}))
-      .flatMap(song => Rx.Observable.just({
+      .mergeMap(song => Rx.Observable.of({
         id: song.dataValues.id,
         title: song.dataValues.title,
         duration: song.dataValues.duration,
         infoHash: song.dataValues.infoHash,
         albumId: song.dataValues.albumId
       }))
+      .onErrorResumeNext()
       .subscribe(
         song => socket.emit('song', song),
         err => {}
       )
+  })
+
+  socket.on('artist-picture', id => {
+    Rx.Observable.fromPromise(db.Artist.findOne({where:{id}}))
+      .mergeMap(artist => Rx.Observable.fromPromise(readFile(artist.dataValues.picturePath)))
+      .onErrorResumeNext()
+      .subscribe(buffer => socket.emit('artist-picture', { id, picture: buffer.toString('base64') }))
+  })
+
+  socket.on('album-picture', id => {
+    Rx.Observable.fromPromise(db.Album.findOne({where:{id: id}}))
+      .mergeMap(album => Rx.Observable.fromPromise(readFile(album.dataValues.picturePath)))
+      .onErrorResumeNext()
+      .subscribe(buffer => socket.emit('album-picture', { id, picture: buffer.toString('base64') }))
   })
 })
 

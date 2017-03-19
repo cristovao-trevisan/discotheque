@@ -6,5 +6,6 @@ module.exports = {
   },
   session   : {
     secret : 'i think no one will found out this'
-  }
+  },
+  authenticate: false
 }

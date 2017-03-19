@@ -44,6 +44,9 @@ var Artist = sequelize.define('artist', {
   name: {
     type: Sequelize.STRING,
     unique: true
+  },
+  picturePath: {
+    type: Sequelize.STRING
   }
 })
 

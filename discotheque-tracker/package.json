@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "bittorrent-tracker": "^8.5.0",
+    "musicmetadata": "^2.0.5",
+    "rx": "^4.1.0",
     "webtorrent-hybrid": "^1.0.5"
   }
 }

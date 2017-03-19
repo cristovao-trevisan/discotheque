@@ -1,14 +1,23 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import { Layout } from 'antd'
-const { Header, Footer, Sider, Content } = Layout;
+const { Header: AntHeader, Footer, Sider: AntSider, Content } = Layout;
 import PlayerBar from '../containers/PlayerBar'
+import MainContent from '../containers/MainContent'
+import Header from './Header'
+import Sider from './Sider'
 
 const App = () => (
   <Layout>
-    <Header>header</Header>
+    <AntHeader>
+      <Header />
+    </AntHeader>
     <Layout>
-      <Sider>Sider</Sider>
-      <Content>Content</Content>
+      <AntSider>
+        <Sider />
+      </AntSider>
+      <Content>
+        <MainContent />
+      </Content>
     </Layout>
     <Footer style={{backgroundColor: '#ff9900', padding: '0.5%'}}>
       <PlayerBar />
