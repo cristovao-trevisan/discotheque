@@ -8,7 +8,6 @@ var server = new Server({
   ws: true, // enable websocket server? [default=true]
   stats: true, // enable web-based statistics? [default=true]
   filter: function (infoHash, params, cb) {
-    console.log('hi')
     // allow only the songs in database
     db.Song.find({
       where: {
@@ -16,7 +15,7 @@ var server = new Server({
       }
     }).then((song) => {
       console.log(infoHash, song !== null)
-      cb(song !== null)
+      cb(song !== null ? null : new Error('disallowed torrent'))
     }).catch((err) => {
       console.log(err)
       cb(false)

@@ -1,0 +1,45 @@
+{
+  "name": "discotheque",
+  "version": "1.0.0",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "css-loader": "^0.27.3",
+    "file-loader": "^0.10.1",
+    "jest": "^18.1.0",
+    "json-loader": "^0.5.4",
+    "onsenui": "^2.2.0",
+    "progress-bar-webpack-plugin": "^1.9.3",
+    "rc-slider": "^6.2.0",
+    "react": "^15.4.2",
+    "react-icons": "^2.2.3",
+    "react-list": "^0.8.3",
+    "react-onsenui": "^1.2.0",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0",
+    "redux-observable": "^0.13.0",
+    "redux-thunk": "^2.2.0",
+    "rxjs": "^5.2.0",
+    "style-loader": "^0.14.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.2",
+    "webtorrent": "^0.98.14"
+  },
+  "scripts": {
+    "build": "webpack -w --watch",
+    "start": "webpack-dev-server -w",
+    "test": "jest",
+    "test:watch": "npm test --watch"
+  },
+  "description": "",
+  "main": "config.js",
+  "devDependencies": {
+    "webpack": "^2.2.1"
+  }
+}

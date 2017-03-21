@@ -155,7 +155,37 @@ io.on('connection', function(socket){
   })
 
   socket.on('artist', artistId => {
+    socket.artist$ = Rx.Observable.fromPromise(db.Artist.findAll({where: {id: artistId}}))
+      .mergeMap(x => x)
+      .mergeMap(artist => Rx.Observable.of({
+          id: artist.dataValues.id,
+          name: artist.dataValues.name,
+          description: artist.dataValues.description
+      }))
+      .subscribe(
+        artist => socket.emit('artist', artist),
+        err => {}
+      )
     Rx.Observable.fromPromise(db.Album.findAll({where: {artistId}}))
+      .mergeMap(x => x)
+      .mergeMap(album => Rx.Observable.of({
+        id: album.dataValues.id,
+        title: album.dataValues.title,
+        description: album.dataValues.description,
+        artistId: album.dataValues.artistId
+      }))
+      .subscribe(
+        album => socket.emit('album', album),
+        err => {console.log(err)}
+      )
+  })
+
+  socket.on('album', (albumId) => {
+    if(socket.album$ !== undefined){
+      socket.album$.unsubscribe();
+      socket.album$ = undefined
+    }
+    socket.album$ = Rx.Observable.fromPromise(db.Album.findAll({where: {id: albumId}}))
       .mergeMap(x => x)
       .mergeMap(album => Rx.Observable.of({
         id: album.dataValues.id,
@@ -174,7 +204,6 @@ io.on('connection', function(socket){
       socket.album$.unsubscribe();
       socket.album$ = undefined
     }
-
     socket.album$ = Rx.Observable.fromPromise(db.Album.findAll())
       .mergeMap(x => x)
       .mergeMap(album => Rx.Observable.of({

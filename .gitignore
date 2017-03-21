@@ -3,3 +3,4 @@ node_modules
 .DS_Store
 discotheque-tracker/node_modules
 torrent-creator/node_modules
+*.log
