@@ -35,35 +35,24 @@ export const addSong = song => ({type: types.ADD_SONG, song})
 /** @param {Object} playlist */
 export const addPlaylist = playlist => ({type: types.ADD_PLAYLIST, playlist})
 
-/**
- * @param {number} id Album id
- * @param {string} picture Base 64 string
-*/
-export const addAlbumPicture = (id, picture) => ({type: types.ADD_ALBUM_PICTURE, id, picture})
-
-/**
- * @param {number} id Artist id
- * @param {string} picture Base 64 string
-*/
-export const addArtistPicture = (id, picture) => ({type: types.ADD_ARTIST_PICTURE, id, picture})
-
 export const setInfo = (key, value) => (dispatch, getState, { serverDataAcquisitor }) => {
   if(key === 'location'){
     if(/^\/albums$/.test(value)){
-      serverDataAcquisitor.getTopic('albums')
+      serverDataAcquisitor.getAlbums(dispatch)
     }
     else if(/^\/artist\/[0-9]+/.test(value)){
       var id = value.substr(value.lastIndexOf('/')+1)
-      serverDataAcquisitor.getTopic('artist', id)
+      serverDataAcquisitor.getArtist(id, dispatch)
+      serverDataAcquisitor.getArtistAlbums(id, dispatch)
     }
     else if(/^\/album\/[0-9]+/.test(value)){
       var id = value.substr(value.lastIndexOf('/')+1)
-      serverDataAcquisitor.getTopic('artists')
-      serverDataAcquisitor.getTopic('album', id)
-      serverDataAcquisitor.getTopic('songs', id)
+      serverDataAcquisitor.getArtists(dispatch)
+      serverDataAcquisitor.getAlbum(id, dispatch)
+      serverDataAcquisitor.getAlbumSongs(id, dispatch)
     }
     else{
-      serverDataAcquisitor.getTopic('artists')
+      serverDataAcquisitor.getArtists(dispatch)
     }
   }
   dispatch({type: types.SET_INFO, key, value})

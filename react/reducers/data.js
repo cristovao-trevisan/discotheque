@@ -93,30 +93,6 @@ const data = (state = initialState, action) => {
         }
       }
       break
-    case ADD_ARTIST_PICTURE:
-      return {
-        ...state,
-        artists: {
-          ...state.artists,
-          [action.id]: {
-            ...state.artists[action.id],
-            picture: action.picture
-          }
-        }
-      }
-      break
-    case ADD_ALBUM_PICTURE:
-      return {
-        ...state,
-        albums: {
-          ...state.albums,
-          [action.id]: {
-            ...state.albums[action.id],
-            picture: action.picture
-          }
-        }
-      }
-      break
     default:
       return state
   }

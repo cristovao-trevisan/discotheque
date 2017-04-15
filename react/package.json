@@ -13,6 +13,7 @@
     "jest": "^18.1.0",
     "json-loader": "^0.5.4",
     "onsenui": "^2.2.0",
+    "popsicle": "^9.1.0",
     "progress-bar-webpack-plugin": "^1.9.3",
     "rc-slider": "^6.2.0",
     "react": "^15.4.2",

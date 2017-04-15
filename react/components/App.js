@@ -24,23 +24,5 @@ const App = () => (
     </Row>
   </Page>
 )
-/*
-<Layout>
-  <AntHeader>
-    <Header />
-  </AntHeader>
-  <Layout>
-    <AntSider>
-      <Sider />
-    </AntSider>
-    <Content>
-      <MainContent />
-    </Content>
-  </Layout>
-  <Footer style={{backgroundColor: '#ff9900', padding: '0.5%'}}>
-    <PlayerBar />
-  </Footer>
-</Layout>
-*/
 
 export default App

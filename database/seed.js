@@ -8,6 +8,11 @@ db.Artist.create({
 
 db.Artist.create({
   name: 'Leo Fressato',
-  picturePath: '../pictures/Leo Fressato.png',
   description: 'Soooo romantic!!'
+})
+
+db.Artist.create({
+  name: 'Luciano Faccini y Melina Mulazani',
+  picturePath: '../pictures/Luciano Faccini y Melina Mulazani.png',
+  description: 'O mais novo do novo mundo!!'
 })

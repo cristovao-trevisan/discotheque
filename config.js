@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   facebook  : {
     id      : 1648752715419279,
@@ -7,5 +9,12 @@ module.exports = {
   session   : {
     secret : 'i think no one will found out this'
   },
-  authenticate: false
+  authenticate: false,
+  port: 3000,
+  // Format => route : path
+  publicPaths: {
+    pictures: '../pictures',
+    public: 'views/public',
+    dist: 'dist'
+  }
 }

@@ -1,73 +1,59 @@
-var SocketIO = require('socket.io-client')
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent'
-import 'rxjs/add/operator/map'
 import * as actions from '../actions'
+import * as popsicle from 'popsicle'
 
 class ServerDataAcquisitor {
   constructor(){
-    this.emitedTopics = {}
+    window.popsicle = popsicle
   }
 
-  init(store){
-    this.socket = SocketIO('localhost:3000')
-    this.getTopic = this.getTopic.bind(this)
-    var _this = this
-    // events subscriptions
-    const artist$ = Observable.fromEvent(this.socket, 'artist')
-    this.artistSubscription = artist$
-      .map(artist => actions.addArtist(artist))
-      .subscribe(action => store.dispatch(action))
-
-    this.artistPictureRequests = artist$
-      .subscribe(artist => _this.getTopic('artist-picture', artist.id))
-
-    const album$ = Observable.fromEvent(this.socket, 'album')
-    this.albumSubscription = album$
-      .map(album => actions.addAlbum(album))
-      .subscribe(action => store.dispatch(action))
-
-    this.albumPictureRequests = album$
-      .subscribe(album => _this.getTopic('album-picture', album.id))
-
-    const song$ = Observable.fromEvent(this.socket, 'song')
-    this.songSubscription = song$
-      .map(song => actions.addSong(song))
-      .subscribe(action => store.dispatch(action))
-
-    const playlist$ = Observable.fromEvent(this.socket, 'playlist')
-    this.playlistSubscription = playlist$
-      .map(playlist => actions.addPlaylist(playlist))
-      .subscribe(action => store.dispatch(action))
-
-    const artistPicture$ = Observable.fromEvent(this.socket, 'artist-picture')
-    this.artistPictureSubscription = artistPicture$
-      .map(info => actions.addArtistPicture(info.id, 'data:image/png;base64,' + info.picture))
-      .subscribe(action => store.dispatch(action))
-
-    const albumPicture$ = Observable.fromEvent(this.socket, 'album-picture')
-    this.albumPictureSubscription = albumPicture$
-      .map(info => actions.addAlbumPicture(info.id, 'data:image/png;base64,' + info.picture))
-      .subscribe(action => store.dispatch(action))
-
-    this.socket.on('connect_error', () => this.onAuthFailure())
+  getArtists(dispatch){
+    popsicle.get('/artists.json')
+      .then(function (res) {
+        JSON.parse(res.body).forEach(artist => {
+          dispatch(actions.addArtist(artist))
+        })
+      })
   }
 
-  /**
-   * @param {string} topic socket.io event name to be sent
-  */
-  getTopic(topic, data){
-    if(this.emitedTopics[topic+'-'+data]) return
-    var self = this
-    self.emitedTopics[topic+'-'+data] = true
-    this.socket.emit(topic, data)
+  getArtist(id, dispatch){
+    popsicle.get('/artist/' + id + '.json')
+      .then(function (res) {
+        dispatch(actions.addArtist(JSON.parse(res.body)))
+      })
   }
 
-  /**
-   * Called to reload page when auth fails
-  */
-  onAuthFailure(){
-    //window.location.reload()
+  getAlbums(dispatch){
+    popsicle.get('/albums.json')
+      .then(function (res) {
+        JSON.parse(res.body).forEach(album => {
+          dispatch(actions.addAlbum(album))
+        })
+      })
+  }
+
+  getArtistAlbums(artistId, dispatch){
+    popsicle.get('/artist/' + artistId + '/albums.json')
+      .then(function (res) {
+        JSON.parse(res.body).forEach(album => {
+          dispatch(actions.addAlbum(album))
+        })
+      })
+  }
+
+  getAlbum(id, dispatch){
+    popsicle.get('/album/' + id + '.json')
+      .then(function (res) {
+        dispatch(actions.addAlbum(JSON.parse(res.body)))
+      })
+  }
+
+  getAlbumSongs(albumId, dispatch){
+    popsicle.get('/album/' + albumId + '/songs.json')
+      .then(function (res) {
+        JSON.parse(res.body).forEach(song => {
+          dispatch(actions.addSong(song))
+        })
+      })
   }
 
 }

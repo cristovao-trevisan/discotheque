@@ -14,7 +14,7 @@ const trackers = ['ws://127.0.0.1:3002']
 // music folder
 const  baseMusicPath = '../../music'
 // allowed types
-const musicTypes = ['mp3', 'flac']
+const musicTypes = ['mp3']
 
 // checks if the file extension matches with the allowed types array
 const isMusicFile = fileName => {

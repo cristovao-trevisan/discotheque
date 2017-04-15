@@ -20,10 +20,9 @@ ons.forcePlatformStyling('android')
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-window.serverDataAcquisitor = new ServerDataAcquisitor()
+const serverDataAcquisitor = new ServerDataAcquisitor()
 
 const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk.withExtraArgument({serverDataAcquisitor}))))
-serverDataAcquisitor.init(store)
 
 window.player = new Player(store)
 window.Player = Player

@@ -1,3 +1,5 @@
+const path = require('path')
+
 // TODO: Documentation
 export const formatTime = (time) => parseInt(time/60)+':'+zeroPad(time%60, 2)
 

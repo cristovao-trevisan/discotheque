@@ -29,7 +29,7 @@ class MainContent extends React.Component {
 
   render(){
     if(/^\/albums$/.test(this.props.path)){
-      var items = convertToItems(this.props.albums, {id: 'id', picture: 'picture', title: 'text'})
+      var items = convertToItems(this.props.albums, {id: 'id', picturePath: 'picture', title: 'text'})
       return (
         <PictureList
           title='Álbums'
@@ -43,7 +43,7 @@ class MainContent extends React.Component {
       var artist = this.props.artists[id]
       if(artist === undefined) return (<div></div>)
       var items = filterObject(this.props.albums, album => album.artistId == id)
-      items = convertToItems(items, {id: 'id', picture: 'picture', title: 'text'})
+      items = convertToItems(items, {id: 'id', picturePath: 'picture', title: 'text'})
       return (
         <PictureList
           title={artist.name}
@@ -95,7 +95,7 @@ class MainContent extends React.Component {
       )
     }
     else{
-      var items = convertToItems(this.props.artists, {id: 'id', picture: 'picture', name: 'text'})
+      var items = convertToItems(this.props.artists, {id: 'id', picturePath: 'picture', name: 'text'})
       return (
         <PictureList
           title='Artistas'
