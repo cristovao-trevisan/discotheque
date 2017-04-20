@@ -1,3 +1,4 @@
+import WebTorrent from 'webtorrent'
 import http from 'stream-http'
 import parseTorrent from 'parse-torrent'
 import * as actions from '../actions'
@@ -5,9 +6,9 @@ import { PLAYER_TIME_RANGE, TORRENT_PATH } from '../constants'
 
 class Player {
   static client = new WebTorrent()
-  static addProps = {announce:['ws://127.0.0.1:3002']}
+  static addProps = {announce: ['ws://127.0.0.1:3002']}
 
-  constructor(store){
+  constructor (store) {
     this.store = store
 
     this.audio = new Audio()
@@ -17,23 +18,22 @@ class Player {
 
     this.audio.ontimeupdate = () => {
       var time = Math.round(this.audio.currentTime)
-      if(Math.abs(time - this.time) > 0)
-        this.store.dispatch(actions.playTime(time))
+      if (Math.abs(time - this.time) > 0) { this.store.dispatch(actions.playTime(time)) }
     }
     this.store.subscribe(::this.onChange)
 
     this.songTorrent = {}
   }
 
-  timeWithinRange(time){
+  timeWithinRange (time) {
     return (time < this.audio.currentTime + PLAYER_TIME_RANGE && time > this.audio.currentTime - PLAYER_TIME_RANGE)
   }
 
   /**
-   * @param {Object|undefined} song Song object
+   * @param {Object} song Song object
    * @param {song} song.torrent Song's torrent relative path
   */
-  play(song){
+  play (song) {
     if (this.currentSong === undefined || (this.currentSong && song && song.id !== this.currentSong.id)) {
       this.currentSong = song
       this.audio.pause()
@@ -52,15 +52,12 @@ class Player {
             data = Buffer.concat(data)
             // parse torrent
             var torrentParsed = parseTorrent(data)
-            console.log(torrentParsed)
             // add torrent to the webtorrent instance
             Player.client.add(torrentParsed, torrent => {
               // save torrent instance on songTorrent object
               this.songTorrent[song.id] = { torrent }
               // get blob url for torrent
-              console.log(torrent)
               torrent.files[0].getBlobURL((err, url) => {
-                console.log(url, err)
                 if (err) return
                 // save blob url
                 this.songTorrent[song.id].url = url
@@ -87,15 +84,15 @@ class Player {
     }
   }
 
-  pause(){
+  pause () {
     this.audio.pause()
   }
 
-  setTime(time){
+  setTime (time) {
     this.audio.currentTime = time
   }
 
-  onChange(){
+  onChange () {
     var state = this.store.getState()
     var { player } = state
     if (player.isPlaying) {
@@ -103,8 +100,7 @@ class Player {
       if (this.currentSong !== player.song) {
         this.play(player.song)
       }
-    }
-    else {
+    } else {
       this.pause()
     }
     if (!this.timeWithinRange(player.time)) {

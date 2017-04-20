@@ -91,41 +91,4 @@ describe('data reducer', () => {
       }
     )
   })
-
-  it('should handle ADD_ALBUM_PICTURE', () => {
-    var init = reducer(initialState, {type: types.ADD_ARTIST, artist})
-    init = reducer(init, {type: types.ADD_ALBUM, album})
-    expect(
-      reducer(init, {
-        type: types.ADD_ALBUM_PICTURE,
-        id: 1,
-        picture: 'picture data'
-      }).albums
-    ).toEqual(
-      {
-        [album.id]: {
-          ...album,
-          picture: 'picture data'
-        }
-      }
-    )
-  })
-
-  it('should handle ADD_ARTIST_PICTURE', () => {
-    var init = reducer(initialState, {type: types.ADD_ARTIST, artist})
-    expect(
-      reducer(init, {
-        type: types.ADD_ARTIST_PICTURE,
-        id: 1,
-        picture: 'picture data'
-      }).artists
-    ).toEqual(
-      {
-        [artist.id]: {
-          ...artist,
-          picture: 'picture data'
-        }
-      }
-    )
-  })
 })

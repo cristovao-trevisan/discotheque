@@ -9,8 +9,8 @@ const avatar = {
 }
 
 const User = () => {
-  var picture = window.user && window.user.picture || require('../assets/img/unknown-user.jpg')
-  var name = window.user && window.user.name || 'Batman'
+  var picture = (window.user && window.user.picture) || require('../assets/img/unknown-user.jpg')
+  var name = (window.user && window.user.name) || 'Batman'
   return (
     <div>
       <img src={picture} style={avatar} />

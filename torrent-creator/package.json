@@ -12,8 +12,6 @@
     "create-torrent": "^3.25.1",
     "jsonfile": "^2.4.0",
     "mkpath": "^1.0.0",
-    "mp3-duration": "^1.0.10",
-    "parse-torrent": "^5.8.1",
-    "urlencode": "^1.1.0"
+    "mp3-duration": "^1.0.10"
   }
 }

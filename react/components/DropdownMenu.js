@@ -1,28 +1,29 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import {Popover, List, ListItem} from 'react-onsenui'
 
-class DropdownMenu extends React.Component{
+class DropdownMenu extends React.Component {
   static propTypes = {
     items: PropTypes.arrayOf(PropTypes.element).isRequired
   }
 
   state = {
-    isOpen: false,
+    isOpen: false
   }
 
-  hide(){
+  hide () {
     this.setState({isOpen: false})
   }
 
-  show(){
+  show () {
     this.setState({isOpen: true})
   }
 
-  toggle(){
+  toggle () {
     this.setState({isOpen: !this.state.isOpen})
   }
 
-  renderItem(item, index){
+  renderItem (item, index) {
     return (
       <ListItem key={index}>
         {item}
@@ -30,7 +31,7 @@ class DropdownMenu extends React.Component{
     )
   }
 
-  render(){
+  render () {
     var self = this
     var target = React.cloneElement(
       React.Children.only(this.props.children),
@@ -44,7 +45,7 @@ class DropdownMenu extends React.Component{
           isOpen={this.state.isOpen}
           onOpen={this.show}
           onHide={this.hide}
-          isCancelable={true}
+          isCancelable
           getTarget={() => this.refs.target}
         >
           <div style={{paddingRight: '10px'}}>

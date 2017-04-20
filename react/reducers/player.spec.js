@@ -95,7 +95,6 @@ describe('player reducer', () => {
   })
 
   it('should handle PLAYER_TOGGLE_TIMER_IS_REMAINING', () => {
-    let time = song.duration - 10
     expect(
       reducer(undefined, {
         type: types.PLAYER_TOGGLE_TIMER_IS_REMAINING

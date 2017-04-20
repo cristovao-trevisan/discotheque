@@ -11,8 +11,6 @@ export const ADD_ARTIST = 'ADD_ARTIST'
 export const ADD_SONG = 'ADD_SONG'
 export const ADD_ALBUM = 'ADD_ALBUM'
 export const ADD_PLAYLIST = 'ADD_PLAYLIST'
-export const ADD_ALBUM_PICTURE = 'ADD_ALBUM_PICTURE'
-export const ADD_ARTIST_PICTURE = 'ADD_ARTIST_PICTURE'
 // info actions
 export const SET_INFO = 'SET_INFO'
 export const REMOVE_INFO = 'REMOVE_INFO'

@@ -8,7 +8,7 @@ const playlist = [
 ]
 
 const song = {id: 10344, title: 'Highway to Hell', duration: 208, albumId: 1}
-const otherSong = {id: 1234, title: 'Money', duration: 383, albumId: 165}
+// const otherSong = {id: 1234, title: 'Money', duration: 383, albumId: 165}
 
 describe('player actions', () => {
   it('should create an action to play a playlist', () => {
@@ -37,7 +37,6 @@ describe('player actions', () => {
   })
 
   it('should create an action to chose the timer type (remaining or not)', () => {
-    const isRemaining = true
     const expectedAction = {
       type: types.PLAYER_TOGGLE_TIMER_IS_REMAINING
     }

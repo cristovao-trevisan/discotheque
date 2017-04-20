@@ -7,24 +7,18 @@
 // native
 const fs = require('fs')
 const path = require('path')
-const url = require('url')
 // npm package
 const createTorrent = require('create-torrent')
 const jsonfile = require('jsonfile')
 const mkpath = require('mkpath')
 const mp3Duration = require('mp3-duration')
-const parseTorrent = require('parse-torrent')
-const urlencode = require('urlencode')
 // local
 const db = require('../database')
-const { inputPath, torrentPath, picturesPath, musicTypes, trackers } = require('./config')
-// createTorrent.announceList = trackers
+const { inputPath, torrentPath, picturesPath } = require('./config')
 // --------------------constants------------------------------------------------
 const domain = 'https://vps2127.publiccloud.com.br/'
 // --------------------useful functions------------------------------------------
 // checks if file name termination matches a music type (defined in musicTypes)
-const isMusicFile = (fileName) => (musicTypes.indexOf(path.extname(fileName)) >= 0)
-
 const copyFile = (origin, destination) => fs.createReadStream(origin).pipe(fs.createWriteStream(destination))
 
 // -------------------------------- search for files ---------------------------
@@ -39,12 +33,13 @@ const processSong = (songPath, title, order, album, artist) => {
       var webSeedpath = songPath.slice(songPath.lastIndexOf('music') + 'music'.length)
       webSeedpath = encodeURI(domain + 'music' + webSeedpath)
       createTorrent(songPath, { urlList: [webSeedpath] }, (err, torrent) => {
-        mkpath( path.join(torrentPath, artist.get('name'), album.get('title')), err => {
-          if (err) throw new Error(err)
+        if (err) throw err
+        mkpath(path.join(torrentPath, artist.get('name'), album.get('title')), err => {
+          if (err) throw err
 
           song.update({ torrent: path.join(artist.get('name'), album.get('title'), title + '.torrent') })
           fs.writeFile(path.join(torrentPath, artist.get('name'), album.get('title'), title + '.torrent'), torrent, err => {
-            if (err) throw new Error(err)
+            if (err) throw err
           })
         })
       })
@@ -53,7 +48,7 @@ const processSong = (songPath, title, order, album, artist) => {
 
 const processAlbum = (albumFolder, artist) => {
   jsonfile.readFile(path.join(albumFolder, 'album.json'), (err, config) => {
-    if (err) return
+    if (err) throw err
     var { title, tags } = config
     db.Album.findOrCreate({ where: { title, artistId: artist.get('id') } })
       .spread((album, created) => {
@@ -65,7 +60,7 @@ const processAlbum = (albumFolder, artist) => {
           })
         })
         mkpath(path.join(picturesPath, artist.get('name'), title), err => {
-          if (err) return
+          if (err) throw err
           var picturePath = path.join(picturesPath, artist.get('name'), title, 'cover.png')
           copyFile(path.join(albumFolder, 'cover.png'), picturePath)
           album.update({ picturePath })
@@ -74,6 +69,7 @@ const processAlbum = (albumFolder, artist) => {
           processSong(path.join(albumFolder, song.file), song.title, i + 1, album, artist)
         })
         fs.readFile(path.join(albumFolder, 'description.html'), 'utf8', (err, description) => {
+          if (err) throw err
           album.update({ description })
         })
       })
@@ -82,7 +78,7 @@ const processAlbum = (albumFolder, artist) => {
 
 const processArtist = artistFolder => {
   jsonfile.readFile(path.join(artistFolder, 'artist.json'), (err, config) => {
-    if (err) return
+    if (err) throw err
     var { id, name, tags } = config
     db.Artist.findOrCreate({ where: {id}, defaults: { name } })
       .spread((artist, created) => {
@@ -94,22 +90,24 @@ const processArtist = artistFolder => {
           })
         })
         mkpath(path.join(picturesPath, name), err => {
-          if (err) return
+          if (err) throw err
           var picturePath = path.join(picturesPath, name, 'picture.png')
           copyFile(path.join(artistFolder, 'picture.png'), picturePath)
           artist.update({ picturePath })
         })
         fs.readFile(path.join(artistFolder, 'description.html'), 'utf8', (err, description) => {
+          if (err) throw err
           artist.update({ description })
         })
         fs.readdir(artistFolder, (err, files) => {
+          if (err) throw err
           files.forEach(file => {
             fs.stat(path.join(artistFolder, file), (err, stat) => {
-              if (err) return
+              if (err) throw err
               // may be artist
               if (stat.isDirectory()) {
                 fs.stat(path.join(artistFolder, file, 'album.json'), (err, stat) => {
-                  if (err) return
+                  if (err) throw err
                   processAlbum(path.join(artistFolder, file), artist)
                 })
               }

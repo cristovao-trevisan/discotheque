@@ -1,5 +1,3 @@
-const path = require('path')
-
 // TODO: Documentation
 export const formatTime = (time) => parseInt(time / 60) + ':' + zeroPad(time % 60, 2)
 
@@ -12,7 +10,6 @@ export const zeroPad = (num, places) => {
 export const convertToItems = function (objects, conversion) {
   var items = []
   for (let id in objects) {
-    var object = objects[id]
     var item = {}
     for (let key in conversion) {
       item[conversion[key]] = objects[id][key]

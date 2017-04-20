@@ -1,4 +1,4 @@
-import {ADD_ARTIST, ADD_SONG, ADD_ALBUM, ADD_PLAYLIST, ADD_PICTURE, ADD_ALBUM_PICTURE, ADD_ARTIST_PICTURE} from '../constants/ActionTypes'
+import {ADD_ARTIST, ADD_SONG, ADD_ALBUM, ADD_PLAYLIST} from '../constants/ActionTypes'
 
 export const initialState = {
   artists: {},
@@ -10,7 +10,7 @@ export const initialState = {
 const data = (state = initialState, action) => {
   switch (action.type) {
     case ADD_ARTIST:
-      var artist = {...action.artist}
+      let artist = {...action.artist}
       if (state.artists[artist.id]) return state
       if (action.artist.albums === undefined) { artist.albums = [] }
       return {
@@ -20,10 +20,9 @@ const data = (state = initialState, action) => {
           [artist.id]: artist
         }
       }
-      break
     case ADD_ALBUM:
-      var artist = state.artists[action.album.artistId]
-      var album = {...action.album}
+      artist = state.artists[action.album.artistId]
+      let album = {...action.album}
       if (state.albums[album.id]) return state
       if (action.album.songs === undefined) { album.songs = [] }
       if (artist === undefined) {
@@ -52,9 +51,8 @@ const data = (state = initialState, action) => {
           }
         }
       }
-      break
     case ADD_SONG:
-      let album = state.albums[action.song.albumId]
+      album = state.albums[action.song.albumId]
       if (album === undefined) {
         return {
           ...state,
@@ -81,7 +79,6 @@ const data = (state = initialState, action) => {
           }
         }
       }
-      break
     case ADD_PLAYLIST:
       return {
         ...state,
@@ -90,7 +87,6 @@ const data = (state = initialState, action) => {
           [action.playlist.id]: action.playlist
         }
       }
-      break
     default:
       return state
   }

@@ -9,26 +9,26 @@ const selectedOption = {
   background: '#44392F'
 }
 
-class Sider extends React.Component{
+class Sider extends React.Component {
   static propTypes = {
     setInfo: PropTypes.func.isRequired,
     location: PropTypes.string.isRequired
   }
 
-  constructor (props){
+  constructor (props) {
     super(props)
 
     this.setLocation = ::this.setLocation
   }
 
-  setLocation(location){
-    if(location !== this.props.location){
+  setLocation (location) {
+    if (location !== this.props.location) {
       window.history.pushState(['next'], '', location)
       this.props.setInfo('location', location)
     }
   }
 
-  render(){
+  render () {
     var self = this
     return (
       <div style={{height: '100%', width: '100%', color: '#DED6CA'}}>
@@ -37,17 +37,17 @@ class Sider extends React.Component{
         <hr />
         <div style={compoundStyles({textAlign: 'center'}, this.props.location === '/' ? selectedOption : undefined)}>
           <a href='#' style={{color: 'inherit', textDecoration: 'none'}} onClick={(e) => {
-              e.preventDefault()
-              self.setLocation('/')
-            }}>
+            e.preventDefault()
+            self.setLocation('/')
+          }}>
             Artistas
           </a>
         </div>
         <div style={compoundStyles({textAlign: 'center'}, this.props.location === '/albums' ? selectedOption : undefined)}>
           <a href='#' style={{color: 'inherit', textDecoration: 'none'}} onClick={(e) => {
-              e.preventDefault()
-              self.setLocation('/albums')
-            }}>
+            e.preventDefault()
+            self.setLocation('/albums')
+          }}>
             Álbums
           </a>
         </div>

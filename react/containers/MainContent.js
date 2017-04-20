@@ -41,7 +41,7 @@ class MainContent extends React.Component {
       var id = this.props.path.substr(this.props.path.lastIndexOf('/') + 1)
       var artist = this.props.artists[id]
       if (artist === undefined) return (<div />)
-      var items = filterObject(this.props.albums, album => album.artistId == id)
+      items = filterObject(this.props.albums, album => album.artistId === id)
       items = convertToItems(items, {id: 'id', picturePath: 'picture', title: 'text'})
       return (
         <PictureList
@@ -52,10 +52,10 @@ class MainContent extends React.Component {
         />
       )
     } else if (/^\/album\/[0-9]+/.test(this.props.path)) {
-      var id = parseInt(this.props.path.substr(this.props.path.lastIndexOf('/') + 1))
+      id = parseInt(this.props.path.substr(this.props.path.lastIndexOf('/') + 1))
       var album = this.props.albums[id]
       if (album === undefined) return (<div />)
-      var artist = this.props.artists[album.artistId]
+      artist = this.props.artists[album.artistId]
       if (artist === undefined) return (<div />)
       var songs = filterObject(this.props.songs, song => song.albumId === id)
       songs = convertToArray(songs)
@@ -92,7 +92,7 @@ class MainContent extends React.Component {
         </div>
       )
     } else {
-      var items = convertToItems(this.props.artists, {id: 'id', picturePath: 'picture', name: 'text'})
+      items = convertToItems(this.props.artists, {id: 'id', picturePath: 'picture', name: 'text'})
       return (
         <PictureList
           title='Artistas'

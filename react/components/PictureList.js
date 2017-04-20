@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import PictureListItem from './PictureListItem'
 import {Row, Col} from 'react-onsenui'
 import {PICTURE_MAX_SIZE_PX} from '../constants'
@@ -19,7 +20,7 @@ class PictureList extends React.Component {
     onItemClick: PropTypes.func.isRequired
   }
 
-  constructor(props){
+  constructor (props) {
     super(props)
 
     this.state = {itemsPerRow: 6, rowsPerPage: 4}
@@ -28,9 +29,9 @@ class PictureList extends React.Component {
     this.updateItems = ::this.updateItems
   }
 
-  updateItems({items, onItemClick}) {
+  updateItems ({items, onItemClick}) {
     var itemComponents = items.map(item =>
-      <Col width={100/this.state.itemsPerRow + '%'} style={{height: '100%'}} key={item.id}>
+      <Col width={100 / this.state.itemsPerRow + '%'} style={{height: '100%'}} key={item.id}>
         <PictureListItem
           picture={item.picture}
           id={item.id}
@@ -42,42 +43,41 @@ class PictureList extends React.Component {
 
     this.rows = []
 
-    var idx = 0
-    for(let i=0; i<=items.length/this.state.itemsPerRow; i++){
+    for (let i = 0; i <= items.length / this.state.itemsPerRow; i++) {
       this.rows.push(
-        <Row key={i} style={{width: '100%', height: 100/this.state.rowsPerPage+'%'}}>
-          { itemComponents.slice(i*this.state.itemsPerRow, (i+1)*this.state.itemsPerRow) }
+        <Row key={i} style={{width: '100%', height: 100 / this.state.rowsPerPage + '%'}}>
+          { itemComponents.slice(i * this.state.itemsPerRow, (i + 1) * this.state.itemsPerRow) }
         </Row>
       )
     }
   }
 
-  updateDimensions() {
+  updateDimensions () {
     let { clientWidth, clientHeight } = this.refs.pictureListContainer
-    let itemsPerRow =  Math.max(Math.floor(clientWidth/PICTURE_MAX_SIZE_PX), 1)
-    let rowsPerPage = Math.max(Math.floor(clientHeight/PICTURE_MAX_SIZE_PX), 1)
+    let itemsPerRow = Math.max(Math.floor(clientWidth / PICTURE_MAX_SIZE_PX), 1)
+    let rowsPerPage = Math.max(Math.floor(clientHeight / PICTURE_MAX_SIZE_PX), 1)
     console.log(clientHeight, rowsPerPage)
     this.setState({itemsPerRow, rowsPerPage})
   }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps (nextProps) {
     this.updateItems(nextProps)
   }
 
-  componentWillUpdate(nextProps){
+  componentWillUpdate (nextProps) {
     this.updateItems(nextProps)
   }
 
-  componentDidMount(){
+  componentDidMount () {
     window.addEventListener('resize', this.updateDimensions)
     this.updateDimensions()
   }
 
-  componentWillUnMount(){
+  componentWillUnMount () {
     window.removeEventListener('resize', this.updateDimensions)
   }
 
-  render(){
+  render () {
     return (
       <div ref='pictureListContainer' style={{width: '100%', height: '100%'}}>
         <div style={{height: '15%', width: '100%', display: 'table'}}>

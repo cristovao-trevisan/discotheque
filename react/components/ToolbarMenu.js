@@ -1,19 +1,12 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import {Icon} from 'react-onsenui'
 import DropdownMenu from './DropdownMenu'
 
-const menuItems = [
-  (
-    <a
-    style={{
-        color: 'inherit',
-        textDecoration: 'none'
-      }}
-    href='/logout'>
-      Logout
-    </a>
-  )
-]
+const menuItems = [(
+  <a style={{ color: 'inherit', textDecoration: 'none' }} href='/logout'>
+    Logout
+  </a>
+)]
 
 const ToolbarMenu = () => (
   <div>

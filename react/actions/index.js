@@ -40,14 +40,14 @@ export const setInfo = (key, value) => (dispatch, getState, { serverDataAcquisit
     if (/^\/albums$/.test(value)) {
       serverDataAcquisitor.getAlbums(dispatch)
     } else if (/^\/artist\/[0-9]+/.test(value)) {
-      var id = value.substr(value.lastIndexOf('/') + 1)
-      serverDataAcquisitor.getArtist(id, dispatch)
-      serverDataAcquisitor.getArtistAlbums(id, dispatch)
+      var artistId = value.substr(value.lastIndexOf('/') + 1)
+      serverDataAcquisitor.getArtist(artistId, dispatch)
+      serverDataAcquisitor.getArtistAlbums(artistId, dispatch)
     } else if (/^\/album\/[0-9]+/.test(value)) {
-      var id = value.substr(value.lastIndexOf('/') + 1)
+      var albumId = value.substr(value.lastIndexOf('/') + 1)
       serverDataAcquisitor.getArtists(dispatch)
-      serverDataAcquisitor.getAlbum(id, dispatch)
-      serverDataAcquisitor.getAlbumSongs(id, dispatch)
+      serverDataAcquisitor.getAlbum(albumId, dispatch)
+      serverDataAcquisitor.getAlbumSongs(albumId, dispatch)
     } else {
       serverDataAcquisitor.getArtists(dispatch)
     }

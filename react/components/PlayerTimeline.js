@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import SliderTemp from 'rc-slider/lib/Slider'
 import createSliderWithTooltip from 'rc-slider/lib/createSliderWithTooltip'
 import 'rc-slider/assets/index.css'
-import { formatTime, zeroPad } from '../helpers'
+import { formatTime } from '../helpers'
 const Slider = createSliderWithTooltip(SliderTemp)
 
 class PlayerTimeline extends React.Component {
@@ -14,10 +15,10 @@ class PlayerTimeline extends React.Component {
     onTimerChange: PropTypes.func.isRequired
   }
 
-  constructor(props){
+  constructor (props) {
     super(props)
     this.state = {
-      time: props.time
+      time: parseInt(props.time)
     }
 
     this.noUpdate = false
@@ -25,34 +26,35 @@ class PlayerTimeline extends React.Component {
     this.onTimerAfterChange = this.onTimerAfterChange.bind(this)
   }
 
-  onTimerChange(time){
+  onTimerChange (time) {
     this.noUpdate = true
-    this.setState({time})
+    this.setState({ time: parseInt(time) })
   }
 
-  onTimerAfterChange(time){
+  onTimerAfterChange (time) {
     this.noUpdate = false
     this.props.onTimerChange(time)
   }
 
-  componentWillReceiveProps(nextProps){
-    if(this.noUpdate) return
-    if(nextProps.time != this.state.time)
-      this.setState({time: nextProps.time})
+  componentWillReceiveProps (nextProps) {
+    if (this.noUpdate) return
+    if (parseInt(nextProps.time) !== this.state.time) {
+      this.setState({ time: parseInt(nextProps.time) })
+    }
   }
 
-  render(){
+  render () {
     let showingTitle = this.props.songTitle === null ? '---' : this.props.songTitle
 
-    let sliderValue = this.props.time/this.props.duration * 100
-    if(isNaN(sliderValue)) sliderValue = 0
+    let sliderValue = this.props.time / this.props.duration * 100
+    if (isNaN(sliderValue)) sliderValue = 0
 
-    let showingTimer = this.props.timerIsRemaining ?
-      '-' + formatTime(this.props.duration-this.props.time) :
-      formatTime(this.props.time) + '/' + formatTime(this.props.duration)
+    let showingTimer = this.props.timerIsRemaining
+      ? '-' + formatTime(this.props.duration - this.props.time)
+      : formatTime(this.props.time) + '/' + formatTime(this.props.duration)
     return (
       <div style={{height: '100%'}}>
-        <div style={{textAlign: 'center', height: '30%', fontSize:'small'}}> {showingTitle} </div>
+        <div style={{textAlign: 'center', height: '30%', fontSize: 'small'}}> {showingTitle} </div>
         <div style={{height: '30%'}}>
           <Slider tipFormatter={formatTime} value={this.state.time} max={this.props.duration} onAfterChange={this.onTimerAfterChange} onChange={this.onTimerChange} />
         </div>
