@@ -2,11 +2,11 @@ import * as actions from '../actions'
 import * as popsicle from 'popsicle'
 
 class ServerDataAcquisitor {
-  constructor(){
+  constructor () {
     window.popsicle = popsicle
   }
 
-  getArtists(dispatch){
+  getArtists (dispatch) {
     popsicle.get('/artists.json')
       .then(function (res) {
         JSON.parse(res.body).forEach(artist => {
@@ -15,14 +15,14 @@ class ServerDataAcquisitor {
       })
   }
 
-  getArtist(id, dispatch){
+  getArtist (id, dispatch) {
     popsicle.get('/artist/' + id + '.json')
       .then(function (res) {
         dispatch(actions.addArtist(JSON.parse(res.body)))
       })
   }
 
-  getAlbums(dispatch){
+  getAlbums (dispatch) {
     popsicle.get('/albums.json')
       .then(function (res) {
         JSON.parse(res.body).forEach(album => {
@@ -31,7 +31,7 @@ class ServerDataAcquisitor {
       })
   }
 
-  getArtistAlbums(artistId, dispatch){
+  getArtistAlbums (artistId, dispatch) {
     popsicle.get('/artist/' + artistId + '/albums.json')
       .then(function (res) {
         JSON.parse(res.body).forEach(album => {
@@ -40,14 +40,14 @@ class ServerDataAcquisitor {
       })
   }
 
-  getAlbum(id, dispatch){
+  getAlbum (id, dispatch) {
     popsicle.get('/album/' + id + '.json')
       .then(function (res) {
         dispatch(actions.addAlbum(JSON.parse(res.body)))
       })
   }
 
-  getAlbumSongs(albumId, dispatch){
+  getAlbumSongs (albumId, dispatch) {
     popsicle.get('/album/' + albumId + '/songs.json')
       .then(function (res) {
         JSON.parse(res.body).forEach(song => {
@@ -55,7 +55,6 @@ class ServerDataAcquisitor {
         })
       })
   }
-
 }
 
 export default ServerDataAcquisitor

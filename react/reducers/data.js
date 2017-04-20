@@ -11,9 +11,8 @@ const data = (state = initialState, action) => {
   switch (action.type) {
     case ADD_ARTIST:
       var artist = {...action.artist}
-      if(state.artists[artist.id]) return state
-      if(action.artist.albums === undefined)
-        artist.albums = []
+      if (state.artists[artist.id]) return state
+      if (action.artist.albums === undefined) { artist.albums = [] }
       return {
         ...state,
         artists: {
@@ -25,10 +24,9 @@ const data = (state = initialState, action) => {
     case ADD_ALBUM:
       var artist = state.artists[action.album.artistId]
       var album = {...action.album}
-      if(state.albums[album.id]) return state
-      if(action.album.songs === undefined)
-      album.songs = []
-      if(artist === undefined) {
+      if (state.albums[album.id]) return state
+      if (action.album.songs === undefined) { album.songs = [] }
+      if (artist === undefined) {
         return {
           ...state,
           albums: {
@@ -57,14 +55,14 @@ const data = (state = initialState, action) => {
       break
     case ADD_SONG:
       let album = state.albums[action.song.albumId]
-      if(album === undefined){
+      if (album === undefined) {
         return {
-         ...state,
-         songs: {
-           ...state.songs,
-           [action.song.id]: action.song
-         }
-       }
+          ...state,
+          songs: {
+            ...state.songs,
+            [action.song.id]: action.song
+          }
+        }
       }
       return {
         ...state,

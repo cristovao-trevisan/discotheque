@@ -19,37 +19,33 @@ const player = (state = initialState, action) => {
         playlist: action.playlist
       }
     case PLAY_SONG:
-      if(state.playlist.songs.find(song => song.id === action.song.id))
+      if (state.playlist.songs.find(song => song.id === action.song.id)) {
         return {
           ...state,
           song: action.song,
           time: 0,
           isPlaying: true
         }
-      else
-        return state
+      } else { return state }
     case PLAY_TIME:
-      if(action.time >=0 && state.song && action.time <= state.song.duration)
-        return {...state, time: action.time}
-      else
-        return state
+      if (action.time >= 0 && state.song && action.time <= state.song.duration) { return {...state, time: action.time} } else { return state }
     case PLAYER_TOGGLE_TIMER_IS_REMAINING:
       return {...state, timerIsRemaining: !state.timerIsRemaining}
     case PLAY_TOGGLE:
-      if(state.song === null) return state
+      if (state.song === null) return state
       return {...state, isPlaying: !state.isPlaying}
     case PLAYER_NEXT:
-      if(state.playlist.songs.length>0){
+      if (state.playlist.songs.length > 0) {
         let idx = state.playlist.songs.indexOf(state.song)
-        idx = (idx+1)%state.playlist.songs.length
-        if(idx >=0) return {...state, song: state.playlist.songs[idx], time: 0}
+        idx = (idx + 1) % state.playlist.songs.length
+        if (idx >= 0) return {...state, song: state.playlist.songs[idx], time: 0}
       }
       return state
     case PLAYER_BACK:
-      if(state.playlist.songs.length>0){
+      if (state.playlist.songs.length > 0) {
         let idx = state.playlist.songs.indexOf(state.song)
-        if(state.time > PLAYER_BACK_REPEAT_TIMEOUT) return {...state, time: 0}
-        idx = --idx < 0 ? state.playlist.songs.length-1 : idx
+        if (state.time > PLAYER_BACK_REPEAT_TIMEOUT) return {...state, time: 0}
+        idx = --idx < 0 ? state.playlist.songs.length - 1 : idx
         return {...state, song: state.playlist.songs[idx], time: 0}
       }
       return state

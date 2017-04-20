@@ -1,5 +1,5 @@
-path = require('path');
-const webpack = require('webpack');
+path = require('path')
+const webpack = require('webpack')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 
 module.exports = {
@@ -14,14 +14,14 @@ module.exports = {
   module: {
     loaders: [
       {
-       test: /\.(js|jsx)$/,
-       exclude: /node_modules/,
-       query: {compact: false},
-       loader: 'babel-loader'
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        query: {compact: false},
+        loader: 'babel-loader'
       },
       {
-       test: /\.css$/,
-       use: [ 'style-loader', 'css-loader' ]
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
       },
       {
         test: /\.styl$/,
@@ -35,7 +35,7 @@ module.exports = {
         test: /\.json$/,
         loader: 'json-loader'
       }
-    ],
+    ]
   },
   plugins: [
     new ProgressBarPlugin(),
@@ -43,8 +43,8 @@ module.exports = {
       'process.env': {
         NODE_ENV: JSON.stringify('production')
       }
-    }),
-    //new webpack.optimize.UglifyJsPlugin()
+    })
+    // new webpack.optimize.UglifyJsPlugin()
   ],
   devServer: {
     contentBase: './dist/'

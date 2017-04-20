@@ -7,16 +7,20 @@
 // native
 const fs = require('fs')
 const path = require('path')
+const url = require('url')
 // npm package
 const createTorrent = require('create-torrent')
 const jsonfile = require('jsonfile')
 const mkpath = require('mkpath')
 const mp3Duration = require('mp3-duration')
 const parseTorrent = require('parse-torrent')
+const urlencode = require('urlencode')
 // local
 const db = require('../database')
 const { inputPath, torrentPath, picturesPath, musicTypes, trackers } = require('./config')
-
+// createTorrent.announceList = trackers
+// --------------------constants------------------------------------------------
+const domain = 'https://vps2127.publiccloud.com.br/'
 // --------------------useful functions------------------------------------------
 // checks if file name termination matches a music type (defined in musicTypes)
 const isMusicFile = (fileName) => (musicTypes.indexOf(path.extname(fileName)) >= 0)
@@ -29,17 +33,16 @@ const processSong = (songPath, title, order, album, artist) => {
     .spread((song, created) => {
       song.update({ order })
       mp3Duration(songPath, function (err, duration) {
-        if(err) throw err
+        if (err) throw err
         song.update({ duration })
       })
-      createTorrent(songPath, { announceList: [trackers] }, (err, torrent) => {
-        var magnetURI = parseTorrent.toMagnetURI(parseTorrent(torrent))
-        var infoHash = parseTorrent(magnetURI).infoHash
-
-        song.update({ infoHash, magnetURI })
-        mkpath(path.join(torrentPath, artist.get('name'), album.get('title')), err => {
+      var webSeedpath = songPath.slice(songPath.lastIndexOf('music') + 'music'.length)
+      webSeedpath = encodeURI(domain + 'music' + webSeedpath)
+      createTorrent(songPath, { urlList: [webSeedpath] }, (err, torrent) => {
+        mkpath( path.join(torrentPath, artist.get('name'), album.get('title')), err => {
           if (err) throw new Error(err)
 
+          song.update({ torrent: path.join(artist.get('name'), album.get('title'), title + '.torrent') })
           fs.writeFile(path.join(torrentPath, artist.get('name'), album.get('title'), title + '.torrent'), torrent, err => {
             if (err) throw new Error(err)
           })
@@ -62,13 +65,13 @@ const processAlbum = (albumFolder, artist) => {
           })
         })
         mkpath(path.join(picturesPath, artist.get('name'), title), err => {
-          if(err) return
+          if (err) return
           var picturePath = path.join(picturesPath, artist.get('name'), title, 'cover.png')
           copyFile(path.join(albumFolder, 'cover.png'), picturePath)
           album.update({ picturePath })
         })
         config.songs.forEach((song, i) => {
-          processSong(path.join(albumFolder, song.file), song.title, i+1, album, artist)
+          processSong(path.join(albumFolder, song.file), song.title, i + 1, album, artist)
         })
         fs.readFile(path.join(albumFolder, 'description.html'), 'utf8', (err, description) => {
           album.update({ description })
@@ -91,7 +94,7 @@ const processArtist = artistFolder => {
           })
         })
         mkpath(path.join(picturesPath, name), err => {
-          if(err) return
+          if (err) return
           var picturePath = path.join(picturesPath, name, 'picture.png')
           copyFile(path.join(artistFolder, 'picture.png'), picturePath)
           artist.update({ picturePath })

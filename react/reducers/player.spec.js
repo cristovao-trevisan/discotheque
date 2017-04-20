@@ -2,7 +2,6 @@ import reducer, {initialState} from './player'
 import * as types from '../constants/ActionTypes'
 import {PLAYER_BACK_REPEAT_TIMEOUT} from '../constants'
 
-
 const playlist = {
   id: 0,
   songs: [
@@ -148,7 +147,7 @@ describe('player reducer', () => {
   })
 
   it('should handle PLAYER_BACK', () => {
-    let state = {...initialState, playlist, song: playlist.songs[1], time: PLAYER_BACK_REPEAT_TIMEOUT+1}
+    let state = {...initialState, playlist, song: playlist.songs[1], time: PLAYER_BACK_REPEAT_TIMEOUT + 1}
     state = reducer(state, {type: types.PLAYER_BACK})
     expect(
       state
@@ -174,5 +173,4 @@ describe('player reducer', () => {
       time: 0
     })
   })
-
 })

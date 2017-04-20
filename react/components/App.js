@@ -4,7 +4,7 @@ import PlayerBar from '../containers/PlayerBar'
 import MainContent from '../containers/MainContent'
 import Toolbar from './Toolbar'
 import Sider from '../containers/Sider'
-//console.log(Page, Button)
+// console.log(Page, Button)
 
 const bottom = () => (
   <BottomToolbar>

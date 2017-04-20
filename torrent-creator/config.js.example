@@ -1,9 +1,9 @@
 // music folder
-const inputPath = '/home/cristovao/Documents/musicoteca/music'
+const inputPath = '/root/music'
 // torrent output folder
-const torrentPath = '/home/cristovao/Documents/musicoteca/torrent'
+const torrentPath = '/root/torrent'
 // pictures output folder
-const picturesPath = '/home/cristovao/Documents/musicoteca/pictures'
+const picturesPath = '/root/pictures'
 // allowed music types
 const musicTypes = ['.mp3']
 // our tracker domain

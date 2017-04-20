@@ -24,8 +24,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(actions.playToggle)
   },
   onTimerChange: (time) => {
-    if(time != null)
-      dispatch(actions.playTime(time))
+    if (time != null) { dispatch(actions.playTime(time)) }
   },
   onTimeClick: () => {
     dispatch(actions.toggleTimerIsRemaining)

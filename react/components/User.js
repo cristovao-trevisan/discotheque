@@ -1,6 +1,6 @@
 import React from 'react'
 
-const avatar ={
+const avatar = {
   width: '30%',
   borderRadius: '50%',
   marginLeft: 'auto',

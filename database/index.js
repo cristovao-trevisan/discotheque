@@ -25,9 +25,9 @@ models.forEach((model) => {
   module.exports[model] = sequelize.import(path.join(__dirname, model))
 })
 
-//---------------------------------RELATIONS-----------------
+// ---------------------------------RELATIONS-----------------
 ;(function (m) {
-  //--------------------------TAGS------------
+  // --------------------------TAGS------------
   // make artists taggable
   m.Artist.belongsToMany(m.Tag, {
     through: {
@@ -45,7 +45,7 @@ models.forEach((model) => {
       model: m.ItemTag,
       unique: false
     },
-    foreignKey: 'tagId',
+    foreignKey: 'tagId'
   })
 
   // make albums taggable
@@ -65,7 +65,7 @@ models.forEach((model) => {
       model: m.ItemTag,
       unique: false
     },
-    foreignKey: 'tagId',
+    foreignKey: 'tagId'
   })
 
   // make songs taggable
@@ -85,10 +85,10 @@ models.forEach((model) => {
       model: m.ItemTag,
       unique: false
     },
-    foreignKey: 'tagId',
+    foreignKey: 'tagId'
   })
 
-  //--------------------------LIKES-----------
+  // --------------------------LIKES-----------
   // make artists likable
   m.Artist.belongsToMany(m.Like, {
     through: {
@@ -106,7 +106,7 @@ models.forEach((model) => {
       model: m.ItemLike,
       unique: false
     },
-    foreignKey: 'likeId',
+    foreignKey: 'likeId'
   })
 
   // make albums likable
@@ -126,7 +126,7 @@ models.forEach((model) => {
       model: m.ItemLike,
       unique: false
     },
-    foreignKey: 'likeId',
+    foreignKey: 'likeId'
   })
 
   // make songs likable
@@ -146,11 +146,10 @@ models.forEach((model) => {
       model: m.ItemLike,
       unique: false
     },
-    foreignKey: 'likeId',
+    foreignKey: 'likeId'
   })
 
-
-  //-------------------------BELONGS----------------------------
+  // -------------------------BELONGS----------------------------
   // Artist is an user
   m.Artist.belongsTo(m.User)
   m.User.hasOne(m.Artist)
@@ -160,7 +159,6 @@ models.forEach((model) => {
   // Songs belongs to albuns
   m.Song.belongsTo(m.Album)
   m.Album.hasMany(m.Song)
-
 })(module.exports)
 
 // export connection

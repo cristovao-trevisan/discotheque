@@ -4,7 +4,7 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING
     },
     description: {
-      type: DataTypes.TEXT,
+      type: DataTypes.TEXT
     },
     picturePath: {
       type: DataTypes.STRING

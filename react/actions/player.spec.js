@@ -10,7 +10,6 @@ const playlist = [
 const song = {id: 10344, title: 'Highway to Hell', duration: 208, albumId: 1}
 const otherSong = {id: 1234, title: 'Money', duration: 383, albumId: 165}
 
-
 describe('player actions', () => {
   it('should create an action to play a playlist', () => {
     const expectedAction = {
@@ -40,14 +39,14 @@ describe('player actions', () => {
   it('should create an action to chose the timer type (remaining or not)', () => {
     const isRemaining = true
     const expectedAction = {
-      type: types.PLAYER_TOGGLE_TIMER_IS_REMAINING,
+      type: types.PLAYER_TOGGLE_TIMER_IS_REMAINING
     }
     expect(actions.toggleTimerIsRemaining).toEqual(expectedAction)
   })
 
   it('should be an action to toggle the playing status (play/pause)', () => {
     const expectedAction = {
-      type: types.PLAY_TOGGLE,
+      type: types.PLAY_TOGGLE
     }
     expect(actions.playToggle).toEqual(expectedAction)
   })

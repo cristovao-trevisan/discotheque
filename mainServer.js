@@ -117,7 +117,7 @@ app.get('/artist/:id/songs.json', ensureAuthenticated, function (req, res) {
         albumId: albumIds
       }})
         .then(songs => {
-          var serializedSongs = Serializer.serializeMany(songs, db.Song, {exclude: ['createdAt', 'updatedAt', 'magnetURI']})
+          var serializedSongs = Serializer.serializeMany(songs, db.Song, {exclude: ['createdAt', 'updatedAt']})
           res.json(serializedSongs)
         }).catch(() => {
           res.status(404)
@@ -171,7 +171,7 @@ app.get('/album/:id.json', ensureAuthenticated, function (req, res) {
 
 app.get('/album/:id/songs.json', ensureAuthenticated, function (req, res) {
   db.Song.findAll({where: {albumId: req.params.id}}).then(songs => {
-    var serializedSongs = Serializer.serializeMany(songs, db.Song, {exclude: ['createdAt', 'updatedAt', 'magnetURI']})
+    var serializedSongs = Serializer.serializeMany(songs, db.Song, {exclude: ['createdAt', 'updatedAt']})
     res.json(serializedSongs)
   })
 })

@@ -2,7 +2,7 @@ module.exports = function (sequelize, DataTypes) {
   return sequelize.define('song', {
     title: {
       type: DataTypes.STRING,
-      validate:{
+      validate: {
         notEmpty: true
       }
     },
@@ -12,12 +12,8 @@ module.exports = function (sequelize, DataTypes) {
     order: {
       type: DataTypes.INTEGER
     },
-    magnetURI: {
-      type: DataTypes.STRING,
-      unique: true
-    },
-    infoHash: {
-      type: DataTypes.STRING,
+    torrent: {
+      type: DataTypes.STRING(1024),
       unique: true
     }
   })

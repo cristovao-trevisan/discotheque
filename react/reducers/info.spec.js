@@ -15,7 +15,7 @@ describe('player reducer', () => {
         key: 'a',
         value: 1
       })
-    ).toEqual({a:1})
+    ).toEqual({a: 1})
   })
 
   it('should handle REMOVE_INFO', () => {

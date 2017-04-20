@@ -5,11 +5,10 @@ import { formatTime } from '../helpers'
 const colStyle = {
   overflow: 'hidden',
   whiteSpace: 'nowrap',
-  marginRight: '1%',
+  marginRight: '1%'
 }
 
 const SongListItem = ({title, songId, artist, artistId, album, albumId, duration, onPlayClick, onArtistClick, onAlbumClick, selected}) => {
-
   return (
     <Row style={selected ? {background: '#b7ad9d'} : {}}>
       <Col width='29%' style={colStyle} onClick={() => onPlayClick(songId)} >{title}</Col>

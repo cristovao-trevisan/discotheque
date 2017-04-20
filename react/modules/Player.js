@@ -1,20 +1,19 @@
+import http from 'stream-http'
+import parseTorrent from 'parse-torrent'
 import * as actions from '../actions'
-import {PLAYER_TIME_RANGE} from '../constants'
+import { PLAYER_TIME_RANGE, TORRENT_PATH } from '../constants'
 
 class Player {
-  static client = new WebTorrent({dht: false})
+  static client = new WebTorrent()
   static addProps = {announce:['ws://127.0.0.1:3002']}
 
   constructor(store){
     this.store = store
-    var state = store.getState().player
-    this.song = state.song
-    this.time = state.time
-    this.playlistId = state.playlist.id
 
     this.audio = new Audio()
     this.play = this.play.bind(this)
-    this.torrentBlob$ = null
+
+    this.currentSong = undefined
 
     this.audio.ontimeupdate = () => {
       var time = Math.round(this.audio.currentTime)
@@ -22,6 +21,8 @@ class Player {
         this.store.dispatch(actions.playTime(time))
     }
     this.store.subscribe(::this.onChange)
+
+    this.songTorrent = {}
   }
 
   timeWithinRange(time){
@@ -29,54 +30,57 @@ class Player {
   }
 
   /**
-   * @param {string} infoHash Hex string
-  */
-  findTorrentByHash(infoHash){
-    return Player.client.torrents.find(tor => tor.infoHash === infoHash)
-  }
-
-  /**
-   * @param {Object} song Song object
-   * @param {song} song.infoHash Song's hash
-   * @param {number} song.duration Song's duration
-
-  */
-  add(song){
-    if(!this.findTorrentByHash(song.infoHash)){
-      Player.client.add(song.infoHash, Player.addProps, (torrent) => {
-        if(!this.song || this.song.id === song.id) this.play(song)
-      })
-    }
-  }
-
-  /**
    * @param {Object|undefined} song Song object
-   * @param {song} song.infoHash Song's hash
-   * @param {number} song.duration Song's duration
-
+   * @param {song} song.torrent Song's torrent relative path
   */
   play(song){
-    if(song === undefined){
-      this.audio.play().catch(err => {})
-    }
-    if(!this.song || song.infoHash !== this.song.infoHash){
+    if (this.currentSong === undefined || (song !== undefined && song.id !== this.song.id)) {
       this.audio.pause()
-      var torrent = this.findTorrentByHash(song.infoHash)
-      if(torrent && torrent.files[0]){
-        this.song = song
-        torrent.files[0].getBlobURL((err, blob) => {
-          if(!err){
-            this.audio.src = blob
-            this.audio.play()
-          }
+      // song not added yet
+      if (this.songTorrent[song.id] === undefined) {
+        this.songTorrent[song.id] = false
+        // load torrent
+        http.get(TORRENT_PATH + song.torrent, (res) => {
+          var data = []
+          res.on('data', chunk => {
+            data.push(chunk) // Append Buffer object
+          })
+
+          // torrent reay
+          res.on('end', () => {
+            data = Buffer.concat(data)
+            // parse torrent
+            var torrentParsed = parseTorrent(data)
+            console.log(torrentParsed)
+            // add torrent to the webtorrent instance
+            Player.client.add(torrentParsed, torrent => {
+              // save torrent instance on songTorrent object
+              this.songTorrent[song.id] = { torrent }
+              // get blob url for torrent
+              this.songTorrent.files[0].getBlobURL((err, url) => {
+                if (err) return
+                // save blob url
+                this.songTorrent[song.id].url = url
+                // if song is still the current one
+                if (this.currentSong === song) {
+                  this.audio.url = url
+                  // if state should be playing just play
+                  if (this.store.getState().player.isPlaying) this.audio.play().catch(() => {})
+                }
+              })
+            })
+          })
         })
+      // song already added
+      } else if (this.songTorrent[song.id]) {
+        // torrent file blob url already loaded
+        if (this.songTorrent[song.id].url) {
+          if (this.audio.url !== this.songTorrent[song.id].url) {
+            this.audio.url = this.songTorrent[song.id].url
+            this.audio.play().catch(() => {})
+          }
+        }
       }
-      else{
-        this.add(song)
-      }
-    }
-    else if(this.audio.paused){
-      this.audio.play().catch(err => {})
     }
   }
 
@@ -90,24 +94,22 @@ class Player {
 
   onChange(){
     var state = this.store.getState()
-    var player = state.player
-    if(player.isPlaying){
-      this.play(player.song)
+    var { player } = state
+    if (player.isPlaying) {
+      if (this.audio.paused) this.audio.play().catch(() => {})
+      if (this.currentSong !== player.song) {
+        this.play(player.song)
+      }
     }
     else {
       this.pause()
     }
-    if(!this.timeWithinRange(player.time)){
+    if (!this.timeWithinRange(player.time)) {
       this.setTime(player.time)
     }
-    if(player.playlist.id !== player.playlistId){
-      for(let i in player.playlist.songs){
-        var song = state.data.songs[player.playlist.songs[i]]
-        if(song !== undefined)
-          this.add(song)
-      }
+    if (player.playlist.id !== player.playlistId) {
+      // some playlist algorithm
     }
-    this.time = player.time
   }
 }
 

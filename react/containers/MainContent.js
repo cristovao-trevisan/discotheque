@@ -7,28 +7,28 @@ import { convertToItems, convertToArray, filterObject } from '../helpers'
 import {playPlaylist, playSong, setInfo} from '../actions'
 
 class MainContent extends React.Component {
-  constructor(props){
+  constructor (props) {
     super(props)
 
     this.setLocation = this.setLocation.bind(this)
     this.setArtist = this.setArtist.bind(this)
   }
 
-  setLocation(location){
+  setLocation (location) {
     window.history.pushState(['next'], '', location)
     this.props.setInfo('location', location)
   }
 
-  setArtist(id){
-    this.setLocation('/artist/'+id)
+  setArtist (id) {
+    this.setLocation('/artist/' + id)
   }
 
-  setAlbum(id){
-    this.setLocation('/album/'+id)
+  setAlbum (id) {
+    this.setLocation('/album/' + id)
   }
 
-  render(){
-    if(/^\/albums$/.test(this.props.path)){
+  render () {
+    if (/^\/albums$/.test(this.props.path)) {
       var items = convertToItems(this.props.albums, {id: 'id', picturePath: 'picture', title: 'text'})
       return (
         <PictureList
@@ -37,11 +37,10 @@ class MainContent extends React.Component {
           onItemClick={id => this.setAlbum(id)}
         />
       )
-    }
-    else if(/^\/artist\/[0-9]+/.test(this.props.path)){
-      var id = this.props.path.substr(this.props.path.lastIndexOf('/')+1)
+    } else if (/^\/artist\/[0-9]+/.test(this.props.path)) {
+      var id = this.props.path.substr(this.props.path.lastIndexOf('/') + 1)
       var artist = this.props.artists[id]
-      if(artist === undefined) return (<div></div>)
+      if (artist === undefined) return (<div />)
       var items = filterObject(this.props.albums, album => album.artistId == id)
       items = convertToItems(items, {id: 'id', picturePath: 'picture', title: 'text'})
       return (
@@ -52,29 +51,28 @@ class MainContent extends React.Component {
           onItemClick={id => this.setAlbum(id)}
         />
       )
-    }
-    else if(/^\/album\/[0-9]+/.test(this.props.path)){
-      var id = parseInt(this.props.path.substr(this.props.path.lastIndexOf('/')+1))
+    } else if (/^\/album\/[0-9]+/.test(this.props.path)) {
+      var id = parseInt(this.props.path.substr(this.props.path.lastIndexOf('/') + 1))
       var album = this.props.albums[id]
-      if(album === undefined) return (<div></div>)
+      if (album === undefined) return (<div />)
       var artist = this.props.artists[album.artistId]
-      if(artist === undefined) return (<div></div>)
+      if (artist === undefined) return (<div />)
       var songs = filterObject(this.props.songs, song => song.albumId === id)
       songs = convertToArray(songs)
       var renderItem = (i) => (
         <SongListItem
-          key = {i}
-          title = {songs[i].title}
-          songId = {songs[i].id}
-          artist = {artist.name}
-          artistId = {artist.id}
-          album = {album.title}
-          albumId = {album.id}
-          duration = {songs[i].duration}
-          selected = {this.props.playingNow && this.props.playingNow.id === songs[i].id}
-          onPlayClick = {() => this.props.play({id: 'album'+album.id, songs}, songs[i])}
-          onArtistClick = {() => id => this.setArtist(id)}
-          onAlbumClick = {() => {}}
+          key={i}
+          title={songs[i].title}
+          songId={songs[i].id}
+          artist={artist.name}
+          artistId={artist.id}
+          album={album.title}
+          albumId={album.id}
+          duration={songs[i].duration}
+          selected={this.props.playingNow && this.props.playingNow.id === songs[i].id}
+          onPlayClick={() => this.props.play({id: 'album' + album.id, songs}, songs[i])}
+          onArtistClick={() => id => this.setArtist(id)}
+          onAlbumClick={() => {}}
         />
       )
       return (
@@ -93,8 +91,7 @@ class MainContent extends React.Component {
           />
         </div>
       )
-    }
-    else{
+    } else {
       var items = convertToItems(this.props.artists, {id: 'id', picturePath: 'picture', name: 'text'})
       return (
         <PictureList

@@ -3,7 +3,6 @@ import {Toolbar as OnsenToolbar} from 'react-onsenui'
 import ToolbarMenu from './ToolbarMenu'
 
 const Toolbar = () => {
-
   return (
     <OnsenToolbar>
       <div className='left' style={{paddingLeft: '10px'}}>

@@ -7,10 +7,9 @@ const PlayerBar = ({song, playlistId, time, isPlaying, timerIsRemaining, onTimeC
     <Col width='10%'>Image</Col>
     <Col width='5%' onClick={onPreviousClick}><Icon size={40} icon='md-skip-previous' /></Col>
     <Col width='5%' onClick={onPlayClick}>{
-      isPlaying ?
-        <Icon size={40}  icon='md-pause'/>
-      :
-        <Icon size={40} icon='md-play'/>
+      isPlaying
+        ? <Icon size={40} icon='md-pause' />
+      : <Icon size={40} icon='md-play' />
     }</Col>
     <Col width='5%' onClick={onNextClick}><Icon size={40} icon='md-skip-next' /></Col>
     <Col width='5%'><Icon size={34} style={{marginTop: '3px'}} icon='md-playlist-audio' /></Col>

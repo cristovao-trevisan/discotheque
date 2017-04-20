@@ -15,10 +15,10 @@ import ons from 'onsenui'
 require('onsenui/css/onsenui.css')
 require('./assets/css/onsen-css-components.css')
 
-const epicMiddleware = createEpicMiddleware(rootEpic);
+const epicMiddleware = createEpicMiddleware(rootEpic)
 ons.forcePlatformStyling('android')
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const serverDataAcquisitor = new ServerDataAcquisitor()
 

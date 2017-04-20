@@ -5,11 +5,11 @@ import DropdownMenu from './DropdownMenu'
 const menuItems = [
   (
     <a
-      style={{
+    style={{
         color: 'inherit',
         textDecoration: 'none'
       }}
-      href="/logout">
+    href='/logout'>
       Logout
     </a>
   )
@@ -20,7 +20,7 @@ const ToolbarMenu = () => (
     <DropdownMenu
       items={menuItems}
       >
-      <Icon icon='md-menu'/>
+      <Icon icon='md-menu' />
     </DropdownMenu>
   </div>
 )
