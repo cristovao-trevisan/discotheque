@@ -34,7 +34,8 @@ class Player {
    * @param {song} song.torrent Song's torrent relative path
   */
   play(song){
-    if (this.currentSong === undefined || (song !== undefined && song.id !== this.song.id)) {
+    if (this.currentSong === undefined || (this.currentSong && song && song.id !== this.currentSong.id)) {
+      this.currentSong = song
       this.audio.pause()
       // song not added yet
       if (this.songTorrent[song.id] === undefined) {
@@ -57,13 +58,15 @@ class Player {
               // save torrent instance on songTorrent object
               this.songTorrent[song.id] = { torrent }
               // get blob url for torrent
-              this.songTorrent.files[0].getBlobURL((err, url) => {
+              console.log(torrent)
+              torrent.files[0].getBlobURL((err, url) => {
+                console.log(url, err)
                 if (err) return
                 // save blob url
                 this.songTorrent[song.id].url = url
                 // if song is still the current one
                 if (this.currentSong === song) {
-                  this.audio.url = url
+                  this.audio.src = url
                   // if state should be playing just play
                   if (this.store.getState().player.isPlaying) this.audio.play().catch(() => {})
                 }
@@ -75,8 +78,8 @@ class Player {
       } else if (this.songTorrent[song.id]) {
         // torrent file blob url already loaded
         if (this.songTorrent[song.id].url) {
-          if (this.audio.url !== this.songTorrent[song.id].url) {
-            this.audio.url = this.songTorrent[song.id].url
+          if (this.audio.src !== this.songTorrent[song.id].url) {
+            this.audio.src = this.songTorrent[song.id].url
             this.audio.play().catch(() => {})
           }
         }
